@@ -43,7 +43,7 @@ The `name` and `description` fields are required. The description is what users 
 Run the validator locally before pushing:
 
 ```bash
-bash scripts/validate.sh
+bash .github/scripts/validate.sh
 ```
 
 This checks:
@@ -58,7 +58,7 @@ CI runs the same checks on every pull request.
 1. Fork the repo
 2. Create a branch: `git checkout -b feat/skill-name`
 3. Write your skill in `skills/<skill-name>/SKILL.md`
-4. Run `bash scripts/validate.sh` — must pass
+4. Run `bash .github/scripts/validate.sh` — must pass
 5. Open a pull request with a clear description of what the skill does
 
 ## Code of conduct

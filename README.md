@@ -10,10 +10,10 @@ Install a skill. Delegate the work. Stay in command.
 
 ```bash
 # Install all Maestro skills
-npx skills add openqa-labs/maestro
+npx skills add openqa-labs/zenith
 
 # Or install a single skill
-npx skills add openqa-labs/maestro/project-kickoff
+npx skills add openqa-labs/zenith/project-kickoff
 ```
 
 ## Skills
