@@ -1,8 +1,8 @@
-# Contributing to Maestro
+# Contributing to Zenith
 
-## What makes a good Maestro skill
+## What makes a good Zenith skill
 
-Maestro skills handle **complete workflows**, not single commands. Before writing a skill, ask: does this take a user from a starting state to a finished state with no manual steps in between?
+Zenith skills handle **complete workflows**, not single commands. Before writing a skill, ask: does this take a user from a starting state to a finished state with no manual steps in between?
 
 Good: "Set up a new project from zero to first commit"
 Not good: "Run git init"

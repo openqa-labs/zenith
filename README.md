@@ -1,19 +1,19 @@
-# Maestro
+# Zenith
 
 > Conduct AI agents like a CEO — orchestrate, delegate, ship.
 
-Managing AI agents today feels like conducting an orchestra without a score. Maestro gives you the score — a growing library of battle-tested Claude Code skills that turn your agent into an executive command center.
+Managing AI agents today feels like conducting an orchestra without a score. Zenith gives you the score — a growing library of battle-tested Claude Code skills that turn your agent into an executive command center.
 
 Install a skill. Delegate the work. Stay in command.
 
 ## Install
 
 ```bash
-# Install all Maestro skills
+# Install all Zenith skills
 npx skills add openqa-labs/zenith
 
 # Or install a single skill
-npx skills add openqa-labs/zenith/project-kickoff
+npx skills add openqa-labs/zenith --skill project-kickoff
 ```
 
 ## Skills
@@ -34,7 +34,7 @@ Once installed, trigger a skill directly in Claude Code:
 
 Claude conducts a structured intake, researches the competitive landscape, sets up the repo, configures CI, writes the README, and creates your first task — end to end.
 
-## Why Maestro
+## Why Zenith
 
 - **End-to-end workflows** — each skill owns a complete job, not just a step
 - **CEO-level thinking** — skills ask the right strategic questions up front
