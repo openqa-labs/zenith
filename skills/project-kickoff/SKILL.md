@@ -65,29 +65,29 @@ Examples: `?q=python`, `?q=dbt`, `?q=react`, `?q=data`, `?q=testing`
 **Curated reference — well-known skills by category:**
 
 *General productivity & documents (`anthropics/skills`):*
-- `docx` — create/read/edit Word documents → `npx skills add anthropics/skills --skill docx`
-- `pdf` — read, merge, split, OCR PDFs → `npx skills add anthropics/skills --skill pdf`
-- `xlsx` — open/edit/create spreadsheets → `npx skills add anthropics/skills --skill xlsx`
-- `pptx` — work with PowerPoint files → `npx skills add anthropics/skills --skill pptx`
-- `webapp-testing` — Playwright web testing → `npx skills add anthropics/skills --skill webapp-testing`
-- `frontend-design` — production-grade UI/UX → `npx skills add anthropics/skills --skill frontend-design`
-- `claude-api` — build apps with Claude API/SDK → `npx skills add anthropics/skills --skill claude-api`
-- `mcp-builder` — create MCP servers → `npx skills add anthropics/skills --skill mcp-builder`
+- `docx` — create/read/edit Word documents → `npx skills add anthropics/skills --skill docx --agent claude-code`
+- `pdf` — read, merge, split, OCR PDFs → `npx skills add anthropics/skills --skill pdf --agent claude-code`
+- `xlsx` — open/edit/create spreadsheets → `npx skills add anthropics/skills --skill xlsx --agent claude-code`
+- `pptx` — work with PowerPoint files → `npx skills add anthropics/skills --skill pptx --agent claude-code`
+- `webapp-testing` — Playwright web testing → `npx skills add anthropics/skills --skill webapp-testing --agent claude-code`
+- `frontend-design` — production-grade UI/UX → `npx skills add anthropics/skills --skill frontend-design --agent claude-code`
+- `claude-api` — build apps with Claude API/SDK → `npx skills add anthropics/skills --skill claude-api --agent claude-code`
+- `mcp-builder` — create MCP servers → `npx skills add anthropics/skills --skill mcp-builder --agent claude-code`
 
 *Knowledge work (`anthropics/knowledge-work-plugins`):*
-- `productivity` — tasks, calendars, daily workflows → `npx skills add anthropics/knowledge-work-plugins --skill productivity`
-- `product-management` — specs, roadmaps, user research → `npx skills add anthropics/knowledge-work-plugins --skill product-management`
-- `marketing` — content, campaigns, brand voice → `npx skills add anthropics/knowledge-work-plugins --skill marketing`
-- `data` — SQL, dashboards, analysis → `npx skills add anthropics/knowledge-work-plugins --skill data`
-- `sales` — outreach, pipeline, prospect research → `npx skills add anthropics/knowledge-work-plugins --skill sales`
+- `productivity` — tasks, calendars, daily workflows → `npx skills add anthropics/knowledge-work-plugins --skill productivity --agent claude-code`
+- `product-management` — specs, roadmaps, user research → `npx skills add anthropics/knowledge-work-plugins --skill product-management --agent claude-code`
+- `marketing` — content, campaigns, brand voice → `npx skills add anthropics/knowledge-work-plugins --skill marketing --agent claude-code`
+- `data` — SQL, dashboards, analysis → `npx skills add anthropics/knowledge-work-plugins --skill data --agent claude-code`
+- `sales` — outreach, pipeline, prospect research → `npx skills add anthropics/knowledge-work-plugins --skill sales --agent claude-code`
 
 *Financial services (`anthropics/financial-services-plugins`):*
-- `financial-analysis` — DCF, LBO, 3-statement models → `npx skills add anthropics/financial-services-plugins --skill financial-analysis`
-- `investment-banking` — CIMs, deal tracking → `npx skills add anthropics/financial-services-plugins --skill investment-banking`
+- `financial-analysis` — DCF, LBO, 3-statement models → `npx skills add anthropics/financial-services-plugins --skill financial-analysis --agent claude-code`
+- `investment-banking` — CIMs, deal tracking → `npx skills add anthropics/financial-services-plugins --skill investment-banking --agent claude-code`
 
 *Frontend / deployment (`vercel-labs/agent-skills`):*
-- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills --skill react-best-practices`
-- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills --skill vercel-deploy-claimable`
+- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills --skill react-best-practices --agent claude-code`
+- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills --skill vercel-deploy-claimable --agent claude-code`
 
 Queue the relevant matches for Phase 1 item 13.
 
@@ -456,20 +456,32 @@ When invoked on a project that already exists (Phase 4 scenario C or D), still r
 
 ### Skills
 
-Install each skill confirmed in Phase 1 item 13 using the skills CLI. Always install locally to the project — never globally:
+Install each skill confirmed in Phase 1 item 13. Always install locally (never globally), targeting claude-code as the agent:
 
 ```bash
-# Install a specific skill from a multi-skill repo
-npx skills add anthropics/skills --skill pdf
-npx skills add anthropics/knowledge-work-plugins --skill data
-npx skills add vercel-labs/agent-skills --skill react-best-practices
+# Install a specific skill
+npx skills add anthropics/skills --skill pdf --agent claude-code
+npx skills add anthropics/knowledge-work-plugins --skill data --agent claude-code
+npx skills add vercel-labs/agent-skills --skill react-best-practices --agent claude-code
 
 # Install multiple specific skills at once
-npx skills add anthropics/skills --skill pdf docx xlsx
+npx skills add anthropics/skills --skill pdf docx xlsx --agent claude-code
 
 # Install all skills from a repo
-npx skills add vercel-labs/agent-skills
+npx skills add vercel-labs/agent-skills --agent claude-code
 ```
+
+After installing, symlink each skill into `.agents/skills/` so other coding agents (Cursor, Copilot, etc.) can discover it too:
+
+```bash
+# Create the .agents/skills/ directory if it doesn't exist
+mkdir -p .agents/skills
+
+# Symlink each installed skill — path relative to .agents/skills/
+ln -s ../../.claude/skills/<skill-name> .agents/skills/<skill-name>
+```
+
+Commit `.agents/skills/` symlinks — they are project configuration, not local-only context.
 
 Only install skills the user confirmed. Do not install speculatively.
 
