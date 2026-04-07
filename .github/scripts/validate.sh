@@ -54,3 +54,20 @@ fi
 
 echo ""
 echo "All $skill_count skill(s) valid."
+
+# Sync skills/ → .claude/skills/ symlinks
+CLAUDE_SKILLS_DIR=".claude/skills"
+if [ -d "$CLAUDE_SKILLS_DIR" ]; then
+  synced=0
+  for skill_dir in "$SKILLS_DIR"/*/; do
+    [ -d "$skill_dir" ] || continue
+    skill_name=$(basename "$skill_dir")
+    target="$CLAUDE_SKILLS_DIR/$skill_name"
+    if [ ! -e "$target" ]; then
+      ln -s "../../$SKILLS_DIR/$skill_name" "$target"
+      echo "LINK [$skill_name] symlinked into $CLAUDE_SKILLS_DIR/"
+      synced=$((synced + 1))
+    fi
+  done
+  [ $synced -eq 0 ] && echo "LINK all skills already symlinked"
+fi
