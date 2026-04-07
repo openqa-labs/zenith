@@ -28,7 +28,7 @@
         "Asks grouped discovery questions and correctly identifies this as a non-coding knowledge-base project",
         "Sets up a public GitHub repo",
         "Fetches EleutherAI/lm-evaluation-harness via opensrc or git clone into opensrc/ and adds opensrc/ to .gitignore",
-        "Uses WebFetch to retrieve paper/URL content and saves to references/ directory",
+        "Uses WebFetch to retrieve paper/URL content and saves to opensrc/<name>.md (not a references/ directory)",
         "Creates CLAUDE.md adapted for non-coding project (no venv/install rules, instead workflow conventions)",
         "Creates CHECKLIST.md as the verification/review mechanism instead of test files",
         "Creates .gitignore that includes opensrc/",

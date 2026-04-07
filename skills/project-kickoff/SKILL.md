@@ -1,10 +1,9 @@
 ---
 name: project-kickoff
 description: >
-  Your CEO/PM assistant for starting, migrating, reviving, or bootstrapping any project — coding or non-coding.
-  Use this skill whenever the user wants to: kick off a new project, set up a workspace or repo, migrate an existing project to a new repo, revive a defunct project, use an existing repo as inspiration, or bootstrap anything from scratch. This includes coding projects (Python, Node, Go, etc.), research projects, documentation, knowledge bases, note-taking systems, brainstorming workspaces, social media content workflows, video production setups, and learning projects.
-  Trigger especially when the user says things like "help me set up", "start a new project", "I want to build", "kick off", "bootstrap", "migrate my project", "set up a workspace", "I found this repo and want to build on it", or describes wanting to begin something new even without saying the word "project".
-  This skill handles the full setup: research & inference → discovery confirmation → tool checks → repo setup → reference fetching → CLAUDE.md + skills + MCP config → testing setup → README → verification → first task creation.
+  Use when the user wants to start, migrate, revive, or bootstrap any project — coding or non-coding.
+  Triggers on: "help me set up", "start a new project", "I want to build", "kick off", "bootstrap", "migrate my project", "set up a workspace", "I found this repo and want to build on it", or any intent to begin something new even without the word "project".
+  Applies to coding projects (Python, Node, Go, etc.) and non-coding projects (research, docs, knowledge bases, content workflows, learning projects).
 ---
 
 # Project Kickoff
@@ -91,7 +90,7 @@ Examples: `?q=python`, `?q=dbt`, `?q=react`, `?q=data`, `?q=testing`
 
 Queue the relevant matches for Phase 1 item 13.
 
-### Step 3 — Build draft answers
+### Step 4 — Build draft answers
 
 For every question in Phase 1, assign a confidence tier:
 

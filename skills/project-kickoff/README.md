@@ -5,7 +5,7 @@ Start any project from zero — discovery interview, naming, repo setup, CI, REA
 ## Install
 
 ```bash
-npx skills add openqa-labs/zenith/project-kickoff
+npx skills add openqa-labs/zenith --skill project-kickoff
 ```
 
 ## What it does
