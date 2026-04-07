@@ -308,12 +308,45 @@ After creating the repo:
 ```bash
 # Set topics
 gh repo edit <owner>/<repo> --add-topic <tag1> --add-topic <tag2>
+```
 
-# Branch protection
+Create a `CODEOWNERS` file so GitHub knows who must approve PRs.
+The owner defaults to the GitHub username/org from Phase 1 item 9:
+```
+# Every file in the repo requires approval from the owner
+* @<owner>
+```
+
+Commit CODEOWNERS before enabling branch protection (GitHub needs it on the default branch first):
+```bash
+mkdir -p .github
+echo "* @<owner>" > .github/CODEOWNERS
+git add .github/CODEOWNERS && git commit -m "chore: add CODEOWNERS" && git push
+```
+
+Then enable branch protection — requires code owner approval, blocks direct pushes, dismisses stale reviews:
+```bash
 gh api repos/<owner>/<repo>/branches/main/protection --method PUT --input - <<'EOF'
-{"required_status_checks":null,"enforce_admins":false,"required_pull_request_reviews":null,"restrictions":null,"allow_force_pushes":false,"allow_deletions":false}
+{
+  "required_status_checks": null,
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": true,
+    "required_approving_review_count": 1
+  },
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false
+}
 EOF
 ```
+
+What this enforces:
+- Every PR needs at least 1 approval from a code owner before merge
+- Approvals are dismissed when new commits are pushed (no stale rubber-stamps)
+- No direct pushes to `main` — everyone goes through a PR
+- `enforce_admins: true` — the rule applies to the repo owner too, not just contributors
 
 ---
 
