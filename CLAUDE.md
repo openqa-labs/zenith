@@ -13,6 +13,7 @@ An agent command center. Skills are the first major component — a curated libr
   - Never edit files inside `opensrc/` — read-only context only
 - Run the validator before committing: `bash .github/scripts/validate.sh`
 - All task tracking happens in GitHub Issues at https://github.com/openqa-labs/zenith/issues
+- **Third-party attribution:** When adding any skill, code, or content derived or adapted from an external project, add an entry to `THIRD_PARTY_LICENSES.md` with the source URL, license type, copyright holder, and full license text. This applies even when the license (e.g. MIT) is permissive — inclusion of the copyright notice is required.
 
 ## Skill Structure
 
