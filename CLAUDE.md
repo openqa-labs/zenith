@@ -1,6 +1,6 @@
 # Zenith
 
-A curated collection of Claude Code skills for running AI agents at the executive level. Skills are installed via [skills.sh](https://skills.sh) and tracked in GitHub Issues.
+An agent command center. Skills are the first major component — a curated library distributed via [skills.sh](https://skills.sh). Future components may extend beyond skills. Issues tracked at https://github.com/openqa-labs/zenith/issues.
 
 ## Rules
 
@@ -27,7 +27,7 @@ skills/
 ## Validation
 
 ```bash
-bash scripts/validate.sh
+bash .github/scripts/validate.sh
 ```
 
 Checks: SKILL.md present, required frontmatter fields (`name`, `description`), markdownlint passes.
@@ -42,6 +42,6 @@ Checks: SKILL.md present, required frontmatter fields (`name`, `description`), m
 ## Key Files
 
 - `skills/` — publishable skills (distributed via skills.sh)
-- `.claude/skills/` — local skills used while developing zenith (dogfooding)
+- `.claude/skills/` — two kinds of skills live here: (1) dev tooling skills needed to work on zenith itself (e.g. writing-skills, claude-md-improver), and (2) symlinks into `skills/` so zenith's own published skills are auto-loaded for dogfooding/testing
 - `skills-lock.json` — tracks installed skill versions
 - `.github/workflows/validate.yml` — CI skill validator
