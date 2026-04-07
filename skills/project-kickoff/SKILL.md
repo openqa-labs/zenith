@@ -350,10 +350,11 @@ When invoked on a project that already exists (Phase 4 scenario C or D), still r
 - Never install packages globally
 - [Python] Use uv: `uv venv && source .venv/bin/activate`
 - Never commit `.env` — use `.env.example`
-- `opensrc/` is gitignored — all local reference material lives there (packages, repos, fetched docs)
-  - Add more context anytime: `npx opensrc <package-or-owner/repo>`
-  - See `opensrc/sources.json` for what's already been fetched
-  - Never edit files inside `opensrc/` — they are read-only context
+- `opensrc/` is gitignored — use it for all local reference material:
+  - **Before working with a package or external repo**, fetch its source for context: `npx opensrc <package-or-owner/repo>`
+  - **To save reference docs, specs, or web pages**, fetch and save them as `opensrc/<name>.md`
+  - Check `opensrc/sources.json` to see what's already been fetched before fetching again
+  - Never edit files inside `opensrc/` — read-only context only
 - Always run tests before committing
 
 ## Testing
