@@ -329,7 +329,7 @@ Then enable branch protection — requires code owner approval, blocks direct pu
 gh api repos/<owner>/<repo>/branches/main/protection --method PUT --input - <<'EOF'
 {
   "required_status_checks": null,
-  "enforce_admins": true,
+  "enforce_admins": false,
   "required_pull_request_reviews": {
     "dismiss_stale_reviews": true,
     "require_code_owner_reviews": true,
@@ -346,7 +346,7 @@ What this enforces:
 - Every PR needs at least 1 approval from a code owner before merge
 - Approvals are dismissed when new commits are pushed (no stale rubber-stamps)
 - No direct pushes to `main` — everyone goes through a PR
-- `enforce_admins: true` — the rule applies to the repo owner too, not just contributors
+- `enforce_admins: false` — repo owner can merge their own PRs without waiting for a review (safe for solo/small teams)
 
 ---
 
