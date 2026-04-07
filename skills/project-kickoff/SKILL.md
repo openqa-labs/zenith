@@ -4,122 +4,192 @@ description: >
   Your CEO/PM assistant for starting, migrating, reviving, or bootstrapping any project — coding or non-coding.
   Use this skill whenever the user wants to: kick off a new project, set up a workspace or repo, migrate an existing project to a new repo, revive a defunct project, use an existing repo as inspiration, or bootstrap anything from scratch. This includes coding projects (Python, Node, Go, etc.), research projects, documentation, knowledge bases, note-taking systems, brainstorming workspaces, social media content workflows, video production setups, and learning projects.
   Trigger especially when the user says things like "help me set up", "start a new project", "I want to build", "kick off", "bootstrap", "migrate my project", "set up a workspace", "I found this repo and want to build on it", or describes wanting to begin something new even without saying the word "project".
-  This skill handles the full setup: discovery interview → tool checks → repo setup → reference fetching → CLAUDE.md + skills + MCP config → testing setup → README → verification → first task creation.
+  This skill handles the full setup: research & inference → discovery confirmation → tool checks → repo setup → reference fetching → CLAUDE.md + skills + MCP config → testing setup → README → verification → first task creation.
 ---
 
 # Project Kickoff
 
-You are the user's project setup partner — part CEO, part PM, part senior engineer. Your job is to get any project from zero to "ready to work" in one structured conversation. You handle the full stack: workspace, GitHub, references, CLAUDE.md, skills, MCP servers, testing, README, and the first task.
+You are the user's project setup partner — part CEO, part PM, part senior engineer. Your job is to get any project from zero to "ready to work" in one structured conversation.
 
-Move through the phases in order. Never skip verification (Phase 9) or the first task (Phase 10). Always explain what you're about to do before running any command.
+**Core principle:** Research first, ask second. Before presenting any questions, spend ~30 seconds researching and inferring answers. Then present a pre-filled confirmation block — not a blank form. The user should be confirming your work, not doing it themselves.
 
 ---
 
-## Phase 1: Discovery Interview
+## Phase 0: Research & Inference
 
-Ask ALL of the following in a single, well-formatted message grouped by category. Do not ask them one at a time — that creates a tedious 30-message back-and-forth. Present them as a friendly intake form.
+Run this phase silently before presenting any questions. Do not announce it — just do the work.
 
-If the user has already provided some answers in their initial message, pre-fill those and only ask for what's missing.
+### Step 1 — Extract from user's message
+
+Parse the user's initial message and extract every fact explicitly stated or strongly implied:
+- Project concept / domain
+- Tech stack hints (language names, framework names, tool names)
+- Personal vs professional signals ("side project", "my team", "startup", "work")
+- GitHub preferences (public/private mentioned, username/org mentioned, repo URL mentioned)
+- Directory path (if mentioned)
+- Any API services mentioned (OpenAI, Stripe, AWS, etc.)
+- **References to fetch** — build an explicit queue for Phase 5:
+  - npm packages mentioned (e.g. "using zod and express") → `npx opensrc <package>`
+  - GitHub repos mentioned as inspiration or reference → `npx opensrc owner/repo`
+  - URLs mentioned (docs, blog posts, papers) → WebFetch → `references/<name>.md`
+  - If the user says "I want to build something like X" where X is a known repo → add X to the fetch queue
+
+### Step 2 — WebSearch the concept
+
+Run 2–3 targeted searches to understand the domain and infer sensible defaults:
+1. `"[concept] github open source"` — find existing tools, understand naming patterns, assess landscape
+2. `"[concept] [inferred language] best practices"` — confirm tech stack defaults
+3. (optional) `"[concept] site:github.com stars:>100"` — find popular reference repos
+
+Use the results to:
+- Understand what already exists (avoids naming conflicts in Phase 2)
+- Confirm or refine the inferred tech stack
+- Identify common patterns, testing frameworks, and tooling conventions for this type of project
+
+### Step 3 — Build draft answers
+
+For every question in Phase 1, assign a confidence tier:
+
+| Tier | Confidence | Action |
+|------|-----------|--------|
+| HIGH | 90%+ | Mark as `[Pre-filled]` — present in confirmation block, user just confirms |
+| MEDIUM | 60–90% | Mark as `[Suggested]` — show with brief reasoning, easy to override |
+| UNKNOWN | <60% | Mark as `[Needed]` — ask directly with 2–3 concrete examples |
+
+Typical inference rules:
+- "side project" / "personal" / "fun" → Personal
+- "my team" / "company" / "startup" / "work" / "we" / API keys → Professional
+- Language/framework explicitly named → HIGH confidence stack
+- Common patterns from WebSearch → MEDIUM confidence stack
+- No stack mentioned, ambiguous domain → UNKNOWN, ask with examples
+- GitHub username/org mentioned → HIGH
+- No path mentioned → suggest `~/Projects/<inferred-name>`
+
+---
+
+## Phase 1: Discovery Confirmation
+
+Present a single pre-filled confirmation block. Do NOT send a blank form. Every question must have either a pre-filled value, a suggestion, or a clear "Needed" marker.
+
+**Opening line:** "Here's what I found — confirm or correct anything:"
+
+**Format for each item:**
+- `[Pre-filled]` — high confidence, shown without question mark
+- `[Suggested: X — reason]` — medium confidence, shown as a proposal
+- `[Needed]` — unknown, shown with examples to reduce typing
+
+**Use `AskUserQuestion` tool** for any binary or small-choice questions (personal vs professional, public vs private, task tracker choice) where the user can click rather than type.
+
+**Example confirmation block:**
 
 ```
-Group A — Project Identity
-  1. Project concept / rough idea? (we'll workshop the final name and description together next)
-  2. Personal or professional?
-  3. Category: coding / documentation / research / knowledge-base / brainstorming /
-     social-media / video / note-taking / learning / other (describe)?
-  4. Tech stack (if coding — language, frameworks, tools you have in mind)?
-  5. Any existing project, repo, or URL you're building on or drawing inspiration from?
-  6. Any branding preferences? (colors, tone — e.g. minimal, playful, technical, bold)
+Here's what I found — confirm or correct anything:
 
-Group B — Workspace & Source Control
-  7. Directory path where this should live? (e.g. ~/Projects/my-thing)
-  8. GitHub setup:
-       a) No GitHub needed
-       b) New public repo
-       c) New private repo
-       d) Already have a GitHub repo — share the URL
-       e) Clone an existing internet repo and push to my own GitHub account
-  9. GitHub username? (needed for b, c, e)
+── Project Identity ──────────────────────────────
+1. Concept:    CLI tool that converts Markdown files to PDF
+               [Pre-filled — from your message]
 
-Group C — References
-  10. Any reference materials to pull in? (npm/pip packages, GitHub repos, URLs,
-      local files, papers, documents) — these will be fetched and stored locally,
-      gitignored so they never get committed.
+2. Type:       Personal side project
+               [Suggested — you said "side project"]
 
-Group D — Infrastructure
-  11. Any API keys, secrets, or cloud services this project will use?
-      (e.g. OpenAI, AWS, Stripe — we'll set up .env.example for these)
-  12. Any MCP servers you know you'll want?
-      (e.g. web search, GitHub, database, browser automation — or say "suggest")
-  13. Any specific Claude Code skills to add?
-      (or say "suggest" — I'll recommend based on your stack)
+3. Category:   Coding — Python CLI tool
+               [Suggested — Markdown/PDF processing is typically Python]
 
-Group E — Project Management & Documentation
-  14. How do you want to track tasks?
-      (local TASKS.md / GitHub Issues / Linear / Notion / other)
-  15. Where should project docs/wiki live?
-      (local docs/ folder / GitHub Wiki / Notion / other)
-  16. What's the very first thing you'll work on after setup?
+4. Stack:      Python 3.11+, Click (CLI), weasyprint (PDF), pytest
+               [Suggested — standard stack for this type of tool; alternatives: pypandoc, reportlab]
 
-Group F — Testing & Verification
-  17. Coding projects: preferred testing framework?
-      (or say "suggest" — I'll pick based on your language)
-  18. Non-coding projects: how will you verify/review your work?
-      (checklists, peer review, publish criteria, etc.)
-  19. Do you need CI/CD? (GitHub Actions, etc.)
+5. Inspiration: None mentioned
+               [Pre-filled — let me know if you have a reference repo]
+
+6. Branding:   Minimal / technical
+               [Suggested — CLI tools default to this tone]
+
+── Workspace & Source Control ────────────────────
+7. Directory:  ~/Projects/md-to-pdf
+               [Suggested — based on your project concept]
+
+8. GitHub:     New private repo
+               [Pre-filled — you said "private"]
+
+9. Username:   [Needed — please provide your GitHub username or org]
+
+── References ────────────────────────────────────
+10. References: Will fetch with opensrc in Phase 5:
+                - <repo-or-package-1>  →  npx opensrc <repo-or-package-1>
+                - <repo-or-package-2>  →  npx opensrc <repo-or-package-2>
+                [Pre-filled — from your message; add more repos, packages, or URLs]
+                (or: None mentioned — let me know if you want any pulled in as context)
+
+── Infrastructure ────────────────────────────────
+11. API keys:  None
+               [Suggested — no external services implied]
+
+12. MCP servers: None
+                 [Suggested — not needed for a local CLI tool]
+
+13. Skills:    None beyond project-kickoff
+               [Suggested]
+
+── Project Management ────────────────────────────
+14. Tasks:     GitHub Issues
+               [Suggested — standard for public/private repos]
+
+15. Docs:      Local docs/ folder
+               [Suggested]
+
+16. First task: "Implement core markdown→PDF conversion"
+               [Suggested — most natural starting point]
+
+── Testing ───────────────────────────────────────
+17. Framework: pytest
+               [Pre-filled — standard for Python]
+
+18. Verification: Run pytest, all tests pass
+                  [Pre-filled]
+
+19. CI/CD:     GitHub Actions — lightweight test runner
+               [Suggested]
+
+────────────────────────────────────────────────
+Reply with corrections to any items above (e.g. "9: gurvinder, 7: ~/Work/md-to-pdf").
+Items with [Pre-filled] are confirmed unless you say otherwise.
 ```
 
-Wait for the user's responses before proceeding.
+### Handling the response
+
+- If the user replies "looks good" or similar → proceed with all pre-filled/suggested values
+- If the user corrects specific items → update those items, proceed
+- If the user asks "what about X" → answer and update
+- The ONLY item that always requires explicit input: GitHub username/org (item 9), unless it was extracted from the initial message
 
 ---
 
 ## Phase 2: Project Name, Description & Branding
 
-This phase runs before touching any tooling or files. A strong project identity shapes the repo name, README, and everything else downstream.
+**Use the research already done in Phase 0** — do not repeat the same WebSearch. Pull from the landscape findings.
 
-### Step 1 — Research similar projects
+### Suggest name options
 
-Use WebSearch to look for existing projects with similar names or solving the same problem. Check:
-- GitHub (search the concept)
-- Product Hunt / npm / PyPI / crates.io as appropriate
-- General web search for "[concept] tool", "[concept] app", "[concept] project"
+Propose **3–5 name options** based on the concept and competitive landscape already researched:
+- **Catchy and memorable** — easy to say, spell, recall
+- **SEO-friendly** — contains the primary keyword naturally
+- **Available** — not already a major project (check Phase 0 findings)
+- **Modern** — no generic or dated patterns
 
-Goals: avoid naming conflicts, avoid trademark/copyright collisions, understand the competitive landscape well enough to suggest differentiated names.
+Format as a table: name | why it works | GitHub slug
 
-### Step 2 — Suggest name options
+### Suggest one-liner and tags
 
-Propose **3–5 name options** that are:
-- **Catchy and memorable** — easy to say, spell, and remember
-- **SEO-friendly** — descriptive enough that people searching for this type of tool will find it
-- **Available** — not already a major open-source project or product
-- **Modern** — avoid generic or dated naming patterns
+After name confirmation:
+1. **One-liner** (~12 words): what it does + who it's for, keyword-rich
+2. **Short description** (2–3 sentences): problem → solution → differentiator
+3. **Tags** (5–8): lowercase, hyphenated GitHub topics
 
-For each option provide:
-- The name
-- Why it works (one line)
-- Suggested GitHub repo slug
-
-Format as a quick table for easy scanning.
-
-### Step 3 — Suggest description and tags
-
-After the user picks a name (or proposes their own), draft:
-
-1. **One-liner** (for README headline, GitHub description field): ~10–15 words, describes what it does and who it's for. Should contain the primary keyword naturally.
-2. **Short description** (for README intro, npm/PyPI/GitHub "About"): 2–3 sentences. Lead with the problem it solves, then what it does, then why it's different.
-3. **Tags / topics**: 5–8 relevant GitHub topics or keywords (lowercase, hyphenated). These improve discoverability on GitHub and search engines.
-
-### Step 4 — Confirm with user
-
-Present all of the above and get explicit sign-off on: final name, one-liner, and tags. Only proceed to Phase 3 once confirmed.
+Get explicit sign-off before proceeding to Phase 3.
 
 ---
 
 ## Phase 3: Tool Availability Check
-
-Before touching the filesystem, detect the OS and check which tools are available.
-
-### OS Detection
 
 ```bash
 case "$(uname -s 2>/dev/null)" in
@@ -128,12 +198,7 @@ case "$(uname -s 2>/dev/null)" in
   MINGW*|MSYS*|CYGWIN*) OS_TYPE="Windows" ;;
   *) OS_TYPE="Windows" ;;
 esac
-echo "Detected OS: $OS_TYPE"
-```
 
-### Tool Check
-
-```bash
 git --version 2>/dev/null && echo "git: OK" || echo "git: MISSING"
 gh --version 2>/dev/null && echo "gh: OK" || echo "gh: MISSING"
 gh auth status 2>/dev/null && echo "gh-auth: OK" || echo "gh-auth: NOT AUTHENTICATED"
@@ -142,11 +207,9 @@ npm --version 2>/dev/null && echo "npm: OK" || echo "npm: MISSING"
 uv --version 2>/dev/null && echo "uv: OK" || echo "uv: MISSING"
 ```
 
-**Required for all projects:** `git`, `gh` (if GitHub is involved)
+Stop if `gh-auth` is NOT AUTHENTICATED — ask the user to run `gh auth login`.
 
-If `gh-auth` is NOT AUTHENTICATED, stop and ask the user to run `gh auth login` before proceeding.
-
-**Install commands for missing tools:**
+Install commands for missing tools:
 
 | Tool | macOS | Linux |
 |------|-------|-------|
@@ -155,13 +218,13 @@ If `gh-auth` is NOT AUTHENTICATED, stop and ask the user to run `gh auth login` 
 | `node/npm` | `brew install node` | `sudo apt install nodejs npm` |
 | `uv` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` | same |
 
-Never install tools without explicit user approval.
+Never install without explicit user approval.
 
 ---
 
 ## Phase 4: Repository Setup
 
-**A — New repo (no existing code):**
+**A — New repo:**
 ```bash
 mkdir -p <path> && cd <path>
 git init
@@ -169,7 +232,7 @@ git init
 gh repo create <name> --public/--private --source=. --remote=origin --push
 ```
 
-**B — Clone from internet, push to personal GitHub:**
+**B — Clone from internet, push to own GitHub:**
 ```bash
 git clone <source-url> <path> && cd <path>
 git remote rename origin upstream
@@ -180,12 +243,11 @@ git push -u origin main
 
 **C — Existing local directory:**
 ```bash
-cd <path>
-git init
+cd <path> && git init
 gh repo create <name> --public/--private --source=. --remote=origin --push
 ```
 
-Create `.gitignore` early — must include:
+Minimum `.gitignore`:
 ```
 opensrc/
 .env
@@ -195,40 +257,82 @@ node_modules/
 .DS_Store
 ```
 
-After creating the repo, apply topics:
+After creating the repo:
 ```bash
+# Set topics
 gh repo edit <owner>/<repo> --add-topic <tag1> --add-topic <tag2>
-```
 
-Enable branch protection:
-```bash
-gh api repos/<owner>/<repo>/branches/main/protection \
-  --method PUT \
-  -f 'required_status_checks=null' \
-  -F enforce_admins=false \
-  -F 'required_pull_request_reviews[required_approving_review_count]=0' \
-  -F allow_force_pushes=false \
-  -F allow_deletions=false \
-  -f restrictions=null
+# Branch protection
+gh api repos/<owner>/<repo>/branches/main/protection --method PUT --input - <<'EOF'
+{"required_status_checks":null,"enforce_admins":false,"required_pull_request_reviews":null,"restrictions":null,"allow_force_pushes":false,"allow_deletions":false}
+EOF
 ```
 
 ---
 
 ## Phase 5: Reference Fetching
 
-For each reference the user provided:
+**Always run this phase** — for new projects and existing projects alike. References give Claude Code deep implementation context (actual source, not just docs). Never skip it when the user has mentioned any package, repo, or URL.
 
-**GitHub repo → opensrc (preferred) or git clone:**
+### Step 1 — Verify .gitignore has opensrc/
+
+Before fetching anything:
 ```bash
-opensrc owner/repo          # if opensrc is available
-# fallback:
-git clone <url> opensrc/<repo-name> --depth=1
+grep -q "opensrc/" .gitignore || echo "opensrc/" >> .gitignore
 ```
 
-**URL → WebFetch:**
-Fetch and save to `references/<name>.md`.
+### Step 2 — Fetch packages and repos with opensrc
 
-Always ensure `opensrc/` is in `.gitignore`.
+Use `npx opensrc` for every npm package and GitHub repo in the Phase 0 fetch queue. No global install needed — `npx` works everywhere.
+
+```bash
+# npm package — auto-detects version from lockfile if present
+npx opensrc <package-name>
+npx opensrc <package-name>@<version>     # specific version
+
+# GitHub repo
+npx opensrc owner/repo
+npx opensrc owner/repo@v1.2.3            # specific tag
+
+# Multiple at once
+npx opensrc react react-dom next
+
+# Full GitHub URL also works
+npx opensrc https://github.com/owner/repo
+```
+
+On first run, opensrc may offer to update `.gitignore` and create `AGENTS.md` — accept both.
+
+opensrc stores sources under `opensrc/` with a `sources.json` index for agent discovery.
+
+**Fallback if npx/npm is unavailable:**
+```bash
+git clone https://github.com/<owner>/<repo> opensrc/<owner>--<repo> --depth=1
+```
+
+### Step 3 — Fetch URLs with WebFetch
+
+For each URL, doc page, or paper in the fetch queue:
+1. Use the WebFetch tool to retrieve the content
+2. Save to `opensrc/<descriptive-name>.md`
+3. Add a 2–3 line summary of what it contains at the top of the file
+
+Everything goes under `opensrc/` — packages, repos, and fetched docs alike. One gitignored directory, no exceptions.
+
+### Step 4 — Document in CLAUDE.md
+
+Add a **Key References** section to CLAUDE.md listing what was fetched:
+
+```markdown
+## Key References
+
+- `opensrc/owner--repo/` — <why it's useful>
+- `opensrc/<name>.md` — <what it contains>
+```
+
+### For existing projects
+
+When invoked on a project that already exists (Phase 4 scenario C or D), still run this phase fully if the user mentioned any packages, repos, or URLs. Do not skip because the project is already set up — references are always additive context.
 
 ---
 
@@ -239,13 +343,18 @@ Always ensure `opensrc/` is in `.gitignore`.
 ```markdown
 # <Project Name>
 
-<One sentence describing what this project is and does.>
+<One sentence: what this project is and does.>
 
 ## Rules
 
 - Never install packages globally
 - [Python] Use uv: `uv venv && source .venv/bin/activate`
-- Never commit `.env` files — use `.env.example`
+- Never commit `.env` — use `.env.example`
+- `opensrc/` is gitignored — use it for all local reference material:
+  - **Before working with a package or external repo**, fetch its source for context: `npx opensrc <package-or-owner/repo>`
+  - **To save reference docs, specs, or web pages**, fetch and save them as `opensrc/<name>.md`
+  - Check `opensrc/sources.json` to see what's already been fetched before fetching again
+  - Never edit files inside `opensrc/` — read-only context only
 - Always run tests before committing
 
 ## Testing
@@ -273,7 +382,7 @@ npx skills add <skill-source>
 
 ### MCP Servers (.mcp.json)
 
-Only create if at least one MCP is approved. Use `${VAR_NAME}` for secrets:
+Only create if at least one MCP was confirmed. Use `${VAR_NAME}` for all secrets:
 
 ```json
 {
@@ -303,7 +412,7 @@ echo 'def test_placeholder(): assert True' > tests/test_basic.py
 npm install --save-dev vitest
 ```
 
-**CI (`github/workflows/ci.yml`):**
+**CI (`.github/workflows/ci.yml`):**
 ```yaml
 name: CI
 on: [push, pull_request]
@@ -312,11 +421,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: <setup command>
+      - run: <setup>
       - run: <test command>
 ```
 
-**Non-coding projects:** Create `CHECKLIST.md` with review criteria instead.
+**Non-coding:** Create `CHECKLIST.md` with review criteria.
 
 ---
 
@@ -327,7 +436,7 @@ jobs:
 
 > <One-liner>
 
-<2–3 sentence description: problem → solution → differentiator>
+<2–3 sentences: problem → solution → differentiator>
 
 ## Installation
 
@@ -356,8 +465,6 @@ MIT
 
 ## Phase 9: Verify the Setup
 
-Run through this checklist and report results:
-
 ```
 [ ] Project directory exists
 [ ] git repo initialized
@@ -370,17 +477,16 @@ Run through this checklist and report results:
 [ ] First commit created
 ```
 
-Fix any failures before proceeding.
+Fix any failures before Phase 10.
 
 ---
 
 ## Phase 10: Create First Task
 
-**GitHub Issues:**
 ```bash
 gh issue create \
-  --title "<first task>" \
-  --body "## Goal\n<what done looks like>\n\n## Notes\n<context>"
+  --title "<first task from Phase 1 item 16>" \
+  --body "## Goal\n<what done looks like>\n\n## Notes\n<context from setup>"
 ```
 
 ---
@@ -396,5 +502,16 @@ Project setup complete.
   Tasks:      <GitHub Issues URL>
   First task: <task title>
 
-Next: cd <path> && <open in editor>
+Next: cd <path>
 ```
+
+---
+
+## Gotchas
+
+- **Personal vs professional signal mismatch:** User says "personal" but mentions API keys, a team, or "we" → treat as professional. Professional affects `.env.example` depth and CI rigor.
+- **Org repos:** If the repo is under a GitHub org (not personal account), `gh repo create <org>/<name>` requires the user to be an org member with repo creation rights. Confirm org membership if unsure.
+- **SSH vs HTTPS:** If `git push` fails with "Permission denied (publickey)", the user's git protocol is SSH but no key is configured. Switch remote to HTTPS: `git remote set-url origin https://github.com/<owner>/<repo>.git`
+- **Windows paths:** `mkdir -p` does not exist — use `mkdir` or `New-Item -ItemType Directory -Force`. Always branch on `$OS_TYPE` from Phase 3.
+- **Phase 0 WebSearch failure:** If WebSearch is unavailable, skip it and lower all confidence tiers by one level (HIGH → MEDIUM, MEDIUM → UNKNOWN). Still present a confirmation block, but with fewer pre-filled items.
+- **User provides very little context:** If the initial message is 5 words or fewer (e.g. "new python project"), set everything to UNKNOWN and ask — but still use AskUserQuestion tool for binary choices.

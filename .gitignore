@@ -1,6 +1,6 @@
-# References — local only, never commit
+# opensrc — all local reference sources (packages, repos, fetched docs)
+# fetched via `npx opensrc` — see https://github.com/vercel-labs/opensrc
 opensrc/
-references/
 
 # Environment / secrets
 .env
