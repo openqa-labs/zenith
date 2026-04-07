@@ -46,6 +46,51 @@ Use the results to:
 - Confirm or refine the inferred tech stack
 - Identify common patterns, testing frameworks, and tooling conventions for this type of project
 
+### Step 3 — Search skills.sh for relevant skills
+
+For each major keyword in the inferred tech stack, WebFetch the skills.sh search:
+```
+https://skills.sh/?q=<keyword>
+```
+Examples: `?q=python`, `?q=dbt`, `?q=react`, `?q=data`, `?q=testing`
+
+**Quality filter — only suggest a skill if it meets one of these criteria:**
+
+| Source | Criteria |
+|--------|---------|
+| Known trusted org | Auto-suggest. Trusted: `anthropics`, `vercel-labs`, `obra`, `nousresearch`, `openqa-labs` |
+| Individual / unknown org | Only suggest if the backing GitHub repo has **500+ stars** |
+| Suspicious / no repo | Never suggest |
+
+**Curated reference — well-known skills by category:**
+
+*General productivity & documents (from `anthropics/skills`):*
+- `docx` — create/read/edit Word documents → `claude plugin install docx@anthropic-agent-skills`
+- `pdf` — read, merge, split, OCR PDFs → `claude plugin install pdf@anthropic-agent-skills`
+- `xlsx` — open/edit/create spreadsheets → `claude plugin install xlsx@anthropic-agent-skills`
+- `pptx` — work with PowerPoint files → `claude plugin install pptx@anthropic-agent-skills`
+- `webapp-testing` — test local web apps with Playwright → `claude plugin install webapp-testing@anthropic-agent-skills`
+- `frontend-design` — production-grade UI/UX → `claude plugin install frontend-design@anthropic-agent-skills`
+- `claude-api` — build apps with Claude API/SDK → `claude plugin install claude-api@anthropic-agent-skills`
+- `mcp-builder` — create MCP servers → `claude plugin install mcp-builder@anthropic-agent-skills`
+
+*Knowledge work (from `anthropics/knowledge-work-plugins`):*
+- `productivity` — tasks, calendars, daily workflows → `claude plugin install productivity@knowledge-work-plugins`
+- `product-management` — specs, roadmaps, user research → `claude plugin install product-management@knowledge-work-plugins`
+- `marketing` — content, campaigns, brand voice → `claude plugin install marketing@knowledge-work-plugins`
+- `data` — SQL, analysis, dashboards → `claude plugin install data@knowledge-work-plugins`
+- `sales` — prospect research, outreach, pipeline → `claude plugin install sales@knowledge-work-plugins`
+
+*Financial services (from `anthropics/financial-services-plugins`):*
+- `financial-analysis` — DCF, LBO, 3-statement models → `claude plugin install financial-analysis@financial-services-plugins`
+- `investment-banking` — CIMs, deal tracking → `claude plugin install investment-banking@financial-services-plugins`
+
+*Frontend / deployment (from `vercel-labs/agent-skills`):*
+- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills`
+- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills`
+
+Queue the relevant matches for Phase 1 item 13.
+
 ### Step 3 — Build draft answers
 
 For every question in Phase 1, assign a confidence tier:
@@ -127,8 +172,10 @@ Here's what I found — confirm or correct anything:
 12. MCP servers: None
                  [Suggested — not needed for a local CLI tool]
 
-13. Skills:    None beyond project-kickoff
-               [Suggested]
+13. Skills:    Found on skills.sh for your stack:
+               - <skill-name> — <what it does> → <install command>
+               - <skill-name> — <what it does> → <install command>
+               [Suggested — from skills.sh search + curated list; confirm to install or say none]
 
 ── Project Management ────────────────────────────
 14. Tasks:     GitHub Issues
@@ -376,9 +423,20 @@ When invoked on a project that already exists (Phase 4 scenario C or D), still r
 
 ### Skills
 
+Install each skill confirmed in Phase 1 item 13. Two install patterns depending on the source:
+
 ```bash
-npx skills add <skill-source>
+# skills.sh / GitHub-sourced skills
+npx skills add vercel-labs/agent-skills
+npx skills add openqa-labs/zenith/project-kickoff
+
+# Anthropic official skills (claude plugin pattern)
+claude plugin install webapp-testing@anthropic-agent-skills
+claude plugin install pdf@anthropic-agent-skills
+claude plugin install data@knowledge-work-plugins
 ```
+
+Only install skills the user confirmed. Do not install speculatively.
 
 ### MCP Servers (.mcp.json)
 
