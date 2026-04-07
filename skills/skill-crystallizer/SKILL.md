@@ -1,10 +1,9 @@
 ---
 name: skill-crystallizer
 description: >
-  Proactively create and improve skills from session learnings. Trigger automatically
-  after any complex task (5+ tool calls), tricky bug fix, corrected approach, or
-  non-obvious workflow discovery. Also trigger immediately when an existing skill is
-  found to be stale, incomplete, or wrong during use.
+  Use when you've completed a complex task (5+ tool calls), overcome a tricky bug,
+  had your approach corrected by the user, or discovered a non-obvious workflow.
+  Also use when loading an existing skill that's stale, incomplete, or wrong.
 ---
 
 # Skill Crystallizer
@@ -54,7 +53,7 @@ Lowercase slug, hyphens only, max 64 characters. Describes the **task type**, no
 
 ### 3. Description
 
-Must include trigger conditions first. Pattern: `Use when <trigger>. <what it does>.`
+Must include trigger conditions only. Pattern: `Use when <trigger>.`
 
 The description is loaded into Claude's system prompt on every session — write it so Claude can self-trigger without being asked.
 
@@ -64,7 +63,7 @@ The description is loaded into Claude's system prompt on every session — write
 ```yaml
 ---
 name: your-skill-name
-description: Use when <trigger condition>. <what it does>.
+description: Use when <trigger condition>.
 ---
 ```
 
