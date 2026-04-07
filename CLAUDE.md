@@ -1,4 +1,4 @@
-# Maestro
+# Zenith
 
 A curated collection of Claude Code skills for running AI agents at the executive level. Skills are installed via [skills.sh](https://skills.sh) and tracked in GitHub Issues.
 
@@ -42,6 +42,6 @@ Checks: SKILL.md present, required frontmatter fields (`name`, `description`), m
 ## Key Files
 
 - `skills/` — publishable skills (distributed via skills.sh)
-- `.claude/skills/` — local skills used while developing maestro (dogfooding)
+- `.claude/skills/` — local skills used while developing zenith (dogfooding)
 - `skills-lock.json` — tracks installed skill versions
 - `.github/workflows/validate.yml` — CI skill validator
