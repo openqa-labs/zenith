@@ -64,30 +64,30 @@ Examples: `?q=python`, `?q=dbt`, `?q=react`, `?q=data`, `?q=testing`
 
 **Curated reference — well-known skills by category:**
 
-*General productivity & documents (from `anthropics/skills`):*
-- `docx` — create/read/edit Word documents → `claude plugin install docx@anthropic-agent-skills`
-- `pdf` — read, merge, split, OCR PDFs → `claude plugin install pdf@anthropic-agent-skills`
-- `xlsx` — open/edit/create spreadsheets → `claude plugin install xlsx@anthropic-agent-skills`
-- `pptx` — work with PowerPoint files → `claude plugin install pptx@anthropic-agent-skills`
-- `webapp-testing` — test local web apps with Playwright → `claude plugin install webapp-testing@anthropic-agent-skills`
-- `frontend-design` — production-grade UI/UX → `claude plugin install frontend-design@anthropic-agent-skills`
-- `claude-api` — build apps with Claude API/SDK → `claude plugin install claude-api@anthropic-agent-skills`
-- `mcp-builder` — create MCP servers → `claude plugin install mcp-builder@anthropic-agent-skills`
+*General productivity & documents (`anthropics/skills`):*
+- `docx` — create/read/edit Word documents → `npx skills add anthropics/skills@docx`
+- `pdf` — read, merge, split, OCR PDFs → `npx skills add anthropics/skills@pdf`
+- `xlsx` — open/edit/create spreadsheets → `npx skills add anthropics/skills@xlsx`
+- `pptx` — work with PowerPoint files → `npx skills add anthropics/skills@pptx`
+- `webapp-testing` — Playwright web testing → `npx skills add anthropics/skills@webapp-testing`
+- `frontend-design` — production-grade UI/UX → `npx skills add anthropics/skills@frontend-design`
+- `claude-api` — build apps with Claude API/SDK → `npx skills add anthropics/skills@claude-api`
+- `mcp-builder` — create MCP servers → `npx skills add anthropics/skills@mcp-builder`
 
-*Knowledge work (from `anthropics/knowledge-work-plugins`):*
-- `productivity` — tasks, calendars, daily workflows → `claude plugin install productivity@knowledge-work-plugins`
-- `product-management` — specs, roadmaps, user research → `claude plugin install product-management@knowledge-work-plugins`
-- `marketing` — content, campaigns, brand voice → `claude plugin install marketing@knowledge-work-plugins`
-- `data` — SQL, analysis, dashboards → `claude plugin install data@knowledge-work-plugins`
-- `sales` — prospect research, outreach, pipeline → `claude plugin install sales@knowledge-work-plugins`
+*Knowledge work (`anthropics/knowledge-work-plugins`):*
+- `productivity` — tasks, calendars, daily workflows → `npx skills add anthropics/knowledge-work-plugins@productivity`
+- `product-management` — specs, roadmaps, user research → `npx skills add anthropics/knowledge-work-plugins@product-management`
+- `marketing` — content, campaigns, brand voice → `npx skills add anthropics/knowledge-work-plugins@marketing`
+- `data` — SQL, dashboards, analysis → `npx skills add anthropics/knowledge-work-plugins@data`
+- `sales` — outreach, pipeline, prospect research → `npx skills add anthropics/knowledge-work-plugins@sales`
 
-*Financial services (from `anthropics/financial-services-plugins`):*
-- `financial-analysis` — DCF, LBO, 3-statement models → `claude plugin install financial-analysis@financial-services-plugins`
-- `investment-banking` — CIMs, deal tracking → `claude plugin install investment-banking@financial-services-plugins`
+*Financial services (`anthropics/financial-services-plugins`):*
+- `financial-analysis` — DCF, LBO, 3-statement models → `npx skills add anthropics/financial-services-plugins@financial-analysis`
+- `investment-banking` — CIMs, deal tracking → `npx skills add anthropics/financial-services-plugins@investment-banking`
 
-*Frontend / deployment (from `vercel-labs/agent-skills`):*
-- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills`
-- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills`
+*Frontend / deployment (`vercel-labs/agent-skills`):*
+- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills@react-best-practices`
+- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills@vercel-deploy-claimable`
 
 Queue the relevant matches for Phase 1 item 13.
 
@@ -456,17 +456,16 @@ When invoked on a project that already exists (Phase 4 scenario C or D), still r
 
 ### Skills
 
-Install each skill confirmed in Phase 1 item 13. Two install patterns depending on the source:
+Install each skill confirmed in Phase 1 item 13 using the skills CLI. Always install locally to the project — never globally:
 
 ```bash
-# skills.sh / GitHub-sourced skills
-npx skills add vercel-labs/agent-skills
-npx skills add openqa-labs/zenith/project-kickoff
+# Install a specific skill from a multi-skill repo
+npx skills add anthropics/skills@pdf
+npx skills add anthropics/knowledge-work-plugins@data
+npx skills add vercel-labs/agent-skills@react-best-practices
 
-# Anthropic official skills (claude plugin pattern)
-claude plugin install webapp-testing@anthropic-agent-skills
-claude plugin install pdf@anthropic-agent-skills
-claude plugin install data@knowledge-work-plugins
+# Install all skills from a repo
+npx skills add vercel-labs/agent-skills
 ```
 
 Only install skills the user confirmed. Do not install speculatively.
