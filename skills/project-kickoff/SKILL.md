@@ -28,7 +28,11 @@ Parse the user's initial message and extract every fact explicitly stated or str
 - GitHub preferences (public/private mentioned, username/org mentioned, repo URL mentioned)
 - Directory path (if mentioned)
 - Any API services mentioned (OpenAI, Stripe, AWS, etc.)
-- Any repos or URLs mentioned as references or inspiration
+- **References to fetch** — build an explicit queue for Phase 5:
+  - npm packages mentioned (e.g. "using zod and express") → `npx opensrc <package>`
+  - GitHub repos mentioned as inspiration or reference → `npx opensrc owner/repo`
+  - URLs mentioned (docs, blog posts, papers) → WebFetch → `references/<name>.md`
+  - If the user says "I want to build something like X" where X is a known repo → add X to the fetch queue
 
 ### Step 2 — WebSearch the concept
 
@@ -110,8 +114,11 @@ Here's what I found — confirm or correct anything:
 9. Username:   [Needed — please provide your GitHub username or org]
 
 ── References ────────────────────────────────────
-10. References: None mentioned
-                [Pre-filled — mention any repos/URLs/docs to pull in as context]
+10. References: Will fetch with opensrc in Phase 5:
+                - <repo-or-package-1>  →  npx opensrc <repo-or-package-1>
+                - <repo-or-package-2>  →  npx opensrc <repo-or-package-2>
+                [Pre-filled — from your message; add more repos, packages, or URLs]
+                (or: None mentioned — let me know if you want any pulled in as context)
 
 ── Infrastructure ────────────────────────────────
 11. API keys:  None
@@ -265,19 +272,65 @@ EOF
 
 ## Phase 5: Reference Fetching
 
-For each reference confirmed in Phase 1:
+**Always run this phase** — for new projects and existing projects alike. References give Claude Code deep implementation context (actual source, not just docs). Never skip it when the user has mentioned any package, repo, or URL.
 
+### Step 1 — Verify .gitignore has opensrc/
+
+Before fetching anything:
 ```bash
-# GitHub repo (preferred)
-opensrc owner/repo
-# fallback:
-git clone <url> opensrc/<repo-name> --depth=1
-
-# URL → save locally
-# Use WebFetch, save to references/<name>.md
+grep -q "opensrc/" .gitignore || echo "opensrc/" >> .gitignore
 ```
 
-Always ensure `opensrc/` is in `.gitignore`.
+### Step 2 — Fetch packages and repos with opensrc
+
+Use `npx opensrc` for every npm package and GitHub repo in the Phase 0 fetch queue. No global install needed — `npx` works everywhere.
+
+```bash
+# npm package — auto-detects version from lockfile if present
+npx opensrc <package-name>
+npx opensrc <package-name>@<version>     # specific version
+
+# GitHub repo
+npx opensrc owner/repo
+npx opensrc owner/repo@v1.2.3            # specific tag
+
+# Multiple at once
+npx opensrc react react-dom next
+
+# Full GitHub URL also works
+npx opensrc https://github.com/owner/repo
+```
+
+On first run, opensrc may offer to update `.gitignore` and create `AGENTS.md` — accept both.
+
+opensrc stores sources under `opensrc/` with a `sources.json` index for agent discovery.
+
+**Fallback if npx/npm is unavailable:**
+```bash
+git clone https://github.com/<owner>/<repo> opensrc/<owner>--<repo> --depth=1
+```
+
+### Step 3 — Fetch URLs with WebFetch
+
+For each URL, doc page, or paper in the fetch queue:
+1. Use the WebFetch tool to retrieve the content
+2. Save to `references/<descriptive-name>.md`
+3. Add a 2–3 line summary of what it contains at the top of the file
+
+### Step 4 — Document in CLAUDE.md
+
+Add a **Key References** section to CLAUDE.md listing what was fetched:
+
+```markdown
+## Key References
+
+- `opensrc/owner--repo/` — <why it's useful>
+- `references/<name>.md` — <what it contains>
+```
+
+### For existing projects
+
+When invoked on a project that already exists (Phase 4 scenario C or D), still run this phase fully if the user mentioned any packages, repos, or URLs. Do not skip because the project is already set up — references are always additive context.
 
 ---
 
