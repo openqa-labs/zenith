@@ -1,0 +1,28 @@
+# References — local only, never commit
+opensrc/
+references/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+.next/
+
+# Python
+*.pyc
+__pycache__/
+.venv/
+*.egg-info/
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+
+# OS-generated
+.DS_Store
+Thumbs.db
+desktop.ini
+*~

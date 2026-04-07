@@ -1,0 +1,30 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
+
+      - name: Validate skill structure
+        run: bash scripts/validate.sh
+
+      - name: Lint markdown
+        run: |
+          markdownlint "skills/**/*.md" README.md CONTRIBUTING.md \
+            --config .markdownlint.json \
+            --ignore node_modules

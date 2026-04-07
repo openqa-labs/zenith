@@ -1,0 +1,59 @@
+{
+  "skill_name": "project-kickoff",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to start a new Python project — a CLI tool that converts markdown files to PDFs. It's a personal side project. I'm thinking of using a GitHub repo (private). Can you help me set everything up?",
+      "expected_output": "Skill conducts a grouped discovery interview covering all 6 groups (identity, workspace, references, infrastructure, PM/docs, testing). After answers, it checks tool availability (git, gh, uv/python), creates the project directory, initializes a private GitHub repo, creates CLAUDE.md with no-global-install rules and uv venv instructions, scaffolds pytest with a placeholder test, creates .env.example if needed, writes a concise README, verifies the setup checklist, and creates the first task.",
+      "files": [],
+      "expectations": [
+        "Asks discovery questions in one grouped message covering project identity, workspace path, GitHub setup, references, infrastructure, PM tool, and testing",
+        "Checks availability of git, gh, and uv/python before proceeding",
+        "Creates a private GitHub repo using gh CLI",
+        "Creates CLAUDE.md that includes the rule: use venv via uv, never install globally",
+        "CLAUDE.md is concise (under 50 lines)",
+        "Scaffolds pytest and creates a placeholder test file",
+        "Creates .gitignore that includes opensrc/ and .env*",
+        "Creates a concise README.md (under 30 lines)",
+        "Runs a verification checklist before declaring success",
+        "Creates the first task in the chosen PM tool"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Help me set up a new knowledge base project. I'm going to be researching LLM evaluation techniques and collecting notes, papers, and summaries. No coding, just organized markdown files. I want to store it on GitHub as a public repo. I also want to pull in content from arxiv.org papers and maybe reference the EleutherAI/lm-evaluation-harness repo for structure inspiration.",
+      "expected_output": "Skill interviews the user, recognizes this is a non-coding knowledge-base project, sets up a public GitHub repo, fetches the EleutherAI/lm-evaluation-harness repo via opensrc (or git clone into opensrc/ dir), uses WebFetch to retrieve relevant arxiv content into references/, creates a CLAUDE.md tailored to a non-coding project (workflow conventions instead of install hygiene), creates CHECKLIST.md as the verification mechanism instead of test files, writes a README, and creates a first task (e.g., 'Create initial paper review template').",
+      "files": [],
+      "expectations": [
+        "Asks grouped discovery questions and correctly identifies this as a non-coding knowledge-base project",
+        "Sets up a public GitHub repo",
+        "Fetches EleutherAI/lm-evaluation-harness via opensrc or git clone into opensrc/ and adds opensrc/ to .gitignore",
+        "Uses WebFetch to retrieve paper/URL content and saves to references/ directory",
+        "Creates CLAUDE.md adapted for non-coding project (no venv/install rules, instead workflow conventions)",
+        "Creates CHECKLIST.md as the verification/review mechanism instead of test files",
+        "Creates .gitignore that includes opensrc/",
+        "Creates a concise README.md",
+        "Runs verification checklist",
+        "Creates first task in chosen PM tool"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I found this GitHub repo at https://github.com/simonw/llm and I want to use it as inspiration to build my own LLM CLI tool in Python. I want to clone it locally as a reference, but build my own thing from scratch in a new private repo. My GitHub username is gurvinder. Set everything up for me — I'll use ~/Projects/my-llm-cli as the directory.",
+      "expected_output": "Skill understands the user wants a NEW project (not a fork) inspired by simonw/llm. It sets up a fresh directory at ~/Projects/my-llm-cli, initializes a new private GitHub repo, uses opensrc or git clone to pull simonw/llm into opensrc/ for reference (gitignored), creates CLAUDE.md with Python/uv rules, scaffolds pytest, creates .env.example, writes README, verifies setup, and creates the first task. Does NOT clone simonw/llm as the main repo — creates a fresh project instead.",
+      "files": [],
+      "expectations": [
+        "Creates a fresh project directory at ~/Projects/my-llm-cli (does NOT clone simonw/llm as main repo)",
+        "Creates a new private GitHub repo under gurvinder's account",
+        "Fetches simonw/llm as a reference into opensrc/ and adds opensrc/ to .gitignore",
+        "Creates CLAUDE.md with uv venv and no-global-install rules",
+        "CLAUDE.md mentions references in opensrc/ are read-only context",
+        "Scaffolds Python test structure with pytest placeholder",
+        "Creates .gitignore including opensrc/ and .env*",
+        "Creates a concise README.md",
+        "Runs full verification checklist",
+        "Creates first task"
+      ]
+    }
+  ]
+}
