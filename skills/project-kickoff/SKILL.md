@@ -314,8 +314,10 @@ git clone https://github.com/<owner>/<repo> opensrc/<owner>--<repo> --depth=1
 
 For each URL, doc page, or paper in the fetch queue:
 1. Use the WebFetch tool to retrieve the content
-2. Save to `references/<descriptive-name>.md`
+2. Save to `opensrc/<descriptive-name>.md`
 3. Add a 2–3 line summary of what it contains at the top of the file
+
+Everything goes under `opensrc/` — packages, repos, and fetched docs alike. One gitignored directory, no exceptions.
 
 ### Step 4 — Document in CLAUDE.md
 
@@ -325,7 +327,7 @@ Add a **Key References** section to CLAUDE.md listing what was fetched:
 ## Key References
 
 - `opensrc/owner--repo/` — <why it's useful>
-- `references/<name>.md` — <what it contains>
+- `opensrc/<name>.md` — <what it contains>
 ```
 
 ### For existing projects
@@ -348,6 +350,7 @@ When invoked on a project that already exists (Phase 4 scenario C or D), still r
 - Never install packages globally
 - [Python] Use uv: `uv venv && source .venv/bin/activate`
 - Never commit `.env` — use `.env.example`
+- Never commit `opensrc/` — all reference material lives there, gitignored
 - Always run tests before committing
 
 ## Testing
