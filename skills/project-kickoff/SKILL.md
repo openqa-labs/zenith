@@ -65,29 +65,29 @@ Examples: `?q=python`, `?q=dbt`, `?q=react`, `?q=data`, `?q=testing`
 **Curated reference — well-known skills by category:**
 
 *General productivity & documents (`anthropics/skills`):*
-- `docx` — create/read/edit Word documents → `npx skills add anthropics/skills@docx`
-- `pdf` — read, merge, split, OCR PDFs → `npx skills add anthropics/skills@pdf`
-- `xlsx` — open/edit/create spreadsheets → `npx skills add anthropics/skills@xlsx`
-- `pptx` — work with PowerPoint files → `npx skills add anthropics/skills@pptx`
-- `webapp-testing` — Playwright web testing → `npx skills add anthropics/skills@webapp-testing`
-- `frontend-design` — production-grade UI/UX → `npx skills add anthropics/skills@frontend-design`
-- `claude-api` — build apps with Claude API/SDK → `npx skills add anthropics/skills@claude-api`
-- `mcp-builder` — create MCP servers → `npx skills add anthropics/skills@mcp-builder`
+- `docx` — create/read/edit Word documents → `npx skills add anthropics/skills --skill docx`
+- `pdf` — read, merge, split, OCR PDFs → `npx skills add anthropics/skills --skill pdf`
+- `xlsx` — open/edit/create spreadsheets → `npx skills add anthropics/skills --skill xlsx`
+- `pptx` — work with PowerPoint files → `npx skills add anthropics/skills --skill pptx`
+- `webapp-testing` — Playwright web testing → `npx skills add anthropics/skills --skill webapp-testing`
+- `frontend-design` — production-grade UI/UX → `npx skills add anthropics/skills --skill frontend-design`
+- `claude-api` — build apps with Claude API/SDK → `npx skills add anthropics/skills --skill claude-api`
+- `mcp-builder` — create MCP servers → `npx skills add anthropics/skills --skill mcp-builder`
 
 *Knowledge work (`anthropics/knowledge-work-plugins`):*
-- `productivity` — tasks, calendars, daily workflows → `npx skills add anthropics/knowledge-work-plugins@productivity`
-- `product-management` — specs, roadmaps, user research → `npx skills add anthropics/knowledge-work-plugins@product-management`
-- `marketing` — content, campaigns, brand voice → `npx skills add anthropics/knowledge-work-plugins@marketing`
-- `data` — SQL, dashboards, analysis → `npx skills add anthropics/knowledge-work-plugins@data`
-- `sales` — outreach, pipeline, prospect research → `npx skills add anthropics/knowledge-work-plugins@sales`
+- `productivity` — tasks, calendars, daily workflows → `npx skills add anthropics/knowledge-work-plugins --skill productivity`
+- `product-management` — specs, roadmaps, user research → `npx skills add anthropics/knowledge-work-plugins --skill product-management`
+- `marketing` — content, campaigns, brand voice → `npx skills add anthropics/knowledge-work-plugins --skill marketing`
+- `data` — SQL, dashboards, analysis → `npx skills add anthropics/knowledge-work-plugins --skill data`
+- `sales` — outreach, pipeline, prospect research → `npx skills add anthropics/knowledge-work-plugins --skill sales`
 
 *Financial services (`anthropics/financial-services-plugins`):*
-- `financial-analysis` — DCF, LBO, 3-statement models → `npx skills add anthropics/financial-services-plugins@financial-analysis`
-- `investment-banking` — CIMs, deal tracking → `npx skills add anthropics/financial-services-plugins@investment-banking`
+- `financial-analysis` — DCF, LBO, 3-statement models → `npx skills add anthropics/financial-services-plugins --skill financial-analysis`
+- `investment-banking` — CIMs, deal tracking → `npx skills add anthropics/financial-services-plugins --skill investment-banking`
 
 *Frontend / deployment (`vercel-labs/agent-skills`):*
-- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills@react-best-practices`
-- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills@vercel-deploy-claimable`
+- `react-best-practices` — 40+ React optimisation rules → `npx skills add vercel-labs/agent-skills --skill react-best-practices`
+- `vercel-deploy-claimable` — auto-detects framework and deploys → `npx skills add vercel-labs/agent-skills --skill vercel-deploy-claimable`
 
 Queue the relevant matches for Phase 1 item 13.
 
@@ -460,9 +460,12 @@ Install each skill confirmed in Phase 1 item 13 using the skills CLI. Always ins
 
 ```bash
 # Install a specific skill from a multi-skill repo
-npx skills add anthropics/skills@pdf
-npx skills add anthropics/knowledge-work-plugins@data
-npx skills add vercel-labs/agent-skills@react-best-practices
+npx skills add anthropics/skills --skill pdf
+npx skills add anthropics/knowledge-work-plugins --skill data
+npx skills add vercel-labs/agent-skills --skill react-best-practices
+
+# Install multiple specific skills at once
+npx skills add anthropics/skills --skill pdf docx xlsx
 
 # Install all skills from a repo
 npx skills add vercel-labs/agent-skills
